@@ -59,9 +59,3 @@ Resources:
                 Action:
                   - amplify:*
                 Resource: '*'
-
-  CloudFormationStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: "./cloudformation-template.yaml"
-      RoleARN: !GetAtt CloudFormationDeploymentRole.Arn
