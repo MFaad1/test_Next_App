@@ -1,0 +1,19 @@
+Resources:
+  AmplifyApp:
+    Type: AWS::Amplify::App
+    Properties:
+      Name: MyNextjsApp
+      Repository: https://github.com/umair2602/next_template
+      AutoBranchCreationConfig:
+        EnableAutoBranchCreation: true
+
+  AmplifyBranch:
+    Type: AWS::Amplify::Branch
+    Properties:
+      AppId: !GetAtt AmplifyApp.AppId
+      BranchName: dev
+
+
+Outputs:
+  AmplifyAppId:
+    Value: !GetAtt AmplifyApp.AppId
