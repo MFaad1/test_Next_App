@@ -19,11 +19,6 @@ jobs:
         with:
           node-version: 18.17.0
 
-      # - name: Install AWS CLI
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y awscli
-
       - name: Install dependencies
         run: yarn install
 
@@ -51,4 +46,4 @@ jobs:
 
       - name: Deploy CloudFormation stack
         run: |
-          aws cloudformation --describe-stack-events --template-file cloudformation-template.yaml --stack-name NextJsAppStack --region us-east-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
+          aws cloudformation deploy --template-file cloudformation-template.yaml --stack-name NextJsAppStack --region us-east-1 --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
