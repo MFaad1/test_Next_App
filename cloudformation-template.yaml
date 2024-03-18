@@ -2,18 +2,37 @@ Resources:
   AmplifyApp:
     Type: AWS::Amplify::App
     Properties:
-      Name: MyNextjsApp
-      Repository: https://github.com/umair2602/next_template
+      Name: YourNextjsApp
+      Repository: 
+        RepositoryUrl: https://github.com/MFaad1/test_Next_App.git
+      BuildSpec: |
+        version: 1
+        frontend:
+          phases:
+            build:
+              commands:
+                - npm ci
+                - npm run build
+          artifacts:
+            baseDirectory: ./
+            files:
+              - '**/*'
+          cache:
+            paths:
+              - node_modules/**/*
       AutoBranchCreationConfig:
         EnableAutoBranchCreation: true
+        EnableAutoBuild: true
+        EnablePullRequestPreview: false
+      AccessToken: !Ref AmplifyToken
 
-  AmplifyBranch:
-    Type: AWS::Amplify::Branch
+  AmplifyToken:
+    Type: AWS::SecretsManager::Secret
     Properties:
-      AppId: !GetAtt AmplifyApp.AppId
-      BranchName: dev
-
-
-Outputs:
-  AmplifyAppId:
-    Value: !GetAtt AmplifyApp.AppId
+      Name: AmplifyToken
+      Description: GitHub Token for Amplify
+      GenerateSecretString:
+        SecretStringTemplate: '{"accessToken": ""}'
+        GenerateStringKey: "accessToken"
+        PasswordLength: 20
+        ExcludeCharacters: '"@/\'
