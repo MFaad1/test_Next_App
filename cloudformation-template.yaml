@@ -7,7 +7,7 @@ Resources:
     Properties:
       Name: YourNextjsApp
       Repository: 
-        RepositoryUrl: https://github.com/yourusername/your-nextjs-repo.git
+        RepositoryUrl: https://github.com/MFaad1/test_Next_App.git
       BuildSpec: |
         version: 1
         frontend:
@@ -63,5 +63,5 @@ Resources:
   CloudFormationStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: "https://s3.amazonaws.com/cloudformation-templates-us-east-1/YourTemplate.yaml"
+      TemplateURL: "./cloudformation-template.yaml"
       RoleARN: !GetAtt CloudFormationDeploymentRole.Arn
