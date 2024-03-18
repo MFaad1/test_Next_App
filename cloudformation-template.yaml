@@ -1,10 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS Amplify App with CloudFormation Stack
+
 Resources:
   AmplifyApp:
     Type: AWS::Amplify::App
     Properties:
       Name: YourNextjsApp
       Repository: 
-        RepositoryUrl: https://github.com/MFaad1/test_Next_App.git
+        RepositoryUrl: https://github.com/yourusername/your-nextjs-repo.git
       BuildSpec: |
         version: 1
         frontend:
@@ -36,3 +39,29 @@ Resources:
         GenerateStringKey: "accessToken"
         PasswordLength: 20
         ExcludeCharacters: '"@/\'
+
+  CloudFormationDeploymentRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CloudFormationDeployPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - amplify:*
+                Resource: '*'
+
+  CloudFormationStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: "https://s3.amazonaws.com/cloudformation-templates-us-east-1/YourTemplate.yaml"
+      RoleARN: !GetAtt CloudFormationDeploymentRole.Arn
