@@ -43,6 +43,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Delete CloudFormation stack if exists
+        run: aws cloudformation delete-stack --stack-name NextJsAppStack --region us-east-1 || true
+        continue-on-error: true
+
+      - name: Wait for stack deletion
+        run: aws cloudformation wait stack-delete-complete --stack-name NextJsAppStack --region us-east-1 || true
+        continue-on-error: true
+
       - name: Describe CloudFormation stack events
         run: |
           aws cloudformation describe-stack-events --stack-name NextJsAppStack --region us-east-1
