@@ -26,6 +26,18 @@ Resources:
         EnableAutoBranchCreation: true
         EnableAutoBuild: true
         EnablePullRequestPreview: false
+      AccessToken: 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
+
+  AmplifyToken:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: AmplifyToken
+      Description: GitHub Token for Amplify
+      GenerateSecretString:
+        SecretStringTemplate: '{"accessToken": ""}'
+        GenerateStringKey: "accessToken"
+        PasswordLength: 20
+        ExcludeCharacters: '"@/\'
 
   CloudFormationDeploymentRole:
     Type: AWS::IAM::Role
