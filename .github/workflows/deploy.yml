@@ -28,7 +28,6 @@ jobs:
       - name: Configure AWS Region
         run: aws configure set region us-east-1
 
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -44,7 +43,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-       - name: Describe CloudFormation stack events
+      - name: Describe CloudFormation stack events
         run: |
           aws cloudformation describe-stack-events --stack-name NextJsAppStack --region us-east-1
 
