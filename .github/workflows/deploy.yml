@@ -43,10 +43,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      # Describe CloudFormation stack events, ignore error if stack doesn't exist
       - name: Describe CloudFormation stack events
         run: |
           aws cloudformation describe-stack-events --stack-name NextJsAppStack --region us-east-1 || true
 
+      # Deploy or create CloudFormation stack based on stack existence
       - name: Deploy or create CloudFormation stack
         run: |
           if aws cloudformation describe-stacks --stack-name NextJsAppStack --region us-east-1 2>&1 | grep -q 'does not exist'; then
