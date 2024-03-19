@@ -26,7 +26,6 @@ Resources:
         EnableAutoBranchCreation: true
         EnableAutoBuild: true
         EnablePullRequestPreview: false
-      AccessToken: Removed
 
   CloudFormationDeploymentRole:
     Type: AWS::IAM::Role
