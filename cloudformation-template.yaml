@@ -5,7 +5,7 @@ Resources:
   AmplifyApp:
     Type: AWS::Amplify::App
     Properties:
-      Name: YourNextjsApp
+      Name: test_next_app
       Repository: https://github.com/MFaad1/test_Next_App.git
       BuildSpec: |
         version: 1
