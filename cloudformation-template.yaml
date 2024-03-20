@@ -1,188 +1,47 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Test App(Development)'
-
-Parameters:
-  AppName:
-    Description: The name of the Amplify App
-    Type: String
-    Default: 'duckstack'
-  Environment:
-    Type: String
-    Default: 'dev'
-    Description: 'The environment to deploy to - at first this will be dev, test, staging, and main (prod).  Later we will add customer1, customer2, etc.'
-    AllowedValues:
-      - 'dev'
-      - 'staging'
-      - 'main'
-  AcmCertificateArn:
-    Type: String
-    Description: 'The ARN of the ACM certificate for the duckstack custom domain.'
-    Default: 'arn:aws:acm:us-east-1:502534243523:certificate/53174e97-848b-46af-822c-4b7707e509f5'
-  HostedZone:
-    Type: String
-    Description: 'The ID of the hosted zone where the custom domain will be added.'
-    Default: 'Z02638353EDA1LGPMXCL7'
-  BasicProductId:
-    Type: String
-    Description: 'The ID of the basic product in Stripe.'
-    Default: 'price_1NNvJ4Bs06gBRZ6FYKSp8xhN'
-  ProProductId:
-    Type: String
-    Description: 'The ID of the pro product in Stripe.'
-    Default: 'price_1NNuqEBs06gBRZ6FjmazmV0m'
-  ProYearlyProductId:
-    Type: String
-    Description: 'The ID of the yearly pro product in Stripe.'
-    Default: 'price_1NrfPeBs06gBRZ6FzuxFA2YI'
-  BasicYearlyProductId:
-    Type: String
-    Description: 'The ID of the Basic pro product in Stripe.'
-    Default: 'price_1NrfOIBs06gBRZ6FIMNA6tbW'
-  Tag:
-    Type: String
-    Default: "Duckstack"
-  CamelCaseTag:
-    Type: String
-    Default: 'DuckStack'
-  Branch: 
-    Type: String
-    Default: 'duckstack-dev'
-    Description: Branch Name for Deployment
-    AllowedValues:
-      - 'duckstack-dev'
-      - 'duckstack-uat'
-      - 'duckstack-main'
-  GPTBaseModel:
-    Type: String
-    Default: 'gpt-4-1106-preview'
-    Description: 'The base model for generative AI interactions in Duckstack.'
-    AllowedValues:
-      - 'gpt-4-1106-preview'
-      - 'gpt-4'
-  MistralBaseModel:
-    Type: String
-    Default: 'mistral-medium'
-    Description: 'The base model for generative AI interactions in Duckstack using Mistral API.'
-    AllowedValues:
-      - 'mistral-medium'
-      - 'mistral-large'
-  PineconeIndexName:
-    Type: String
-    Default: 'stinkbait'
-    Description: 'The name of the Pinecone index for the Duckstack application.'
-  PineconeUserIndexName:
-    Type: String
-    Default: 'stinkbaituser'
-    Description: 'The name of the Pinecone index for the Duckstack application.'
-  PineconeEnvironment:
-    Type: String
-    Default: 'dev'
-    Description: 'The environment for the Pinecone index for the Duckstack application.'
-  ModelPath:
-    Type: String
-    Default: 'intfloat/e5-large-v2'
-    Description: 'The path to the model for generative AI interactions in Duckstack.'
-  NodeJSVersion:
-    Type: String
-    Default: 'nodejs18.x'
-  LambdaService:
-    Type: String
-    Default: 'lambda.amazonaws.com'
-  ECSTaskService:
-    Type: String
-    Default: 'ecs-tasks.amazonaws.com'
-  IAMPolicyResource:
-    Type: String
-    Default: 'arn:aws:logs:*:*:*'
+Description: AWS Amplify App with CloudFormation Stack
 
 Resources:
   AmplifyApp:
-  # Amplify App for the DuckStack Frontend
-    Type: 'AWS::Amplify::App'
+    Type: AWS::Amplify::App
     Properties:
-      Name: !Sub 'test.io'
-      Description: !Sub '${CamelCaseTag} test app App' #parameterized DuckStack
-      IAMServiceRole: 'arn:aws:iam::333893573946:role/AmplifySSRLoggingRole-dl9wnpuigxyq6'
-      Repository: 'https://github.com/MFaad1/test_Next_App'
-      AccessToken: '{{resolve:secretsmanager:github:SecretString:github_pat}}'
-      Platform: WEB_COMPUTE
+      Name: test_next_app
+      Repository: https://github.com/MFaad1/test_Next_App.git
+      BuildSpec: |
+        version: 1
+        frontend:
+          phases:
+            build:
+              commands:
+                - npm ci
+                - npm run build
+          artifacts:
+            baseDirectory: ./
+            files:
+              - '**/*'
+          cache:
+            paths:
+              - node_modules/**/*
       AutoBranchCreationConfig:
         EnableAutoBranchCreation: true
         EnableAutoBuild: true
-        EnablePerformanceMode : false
-      EnableBranchAutoDeletion: true
-      BuildSpec: |
-        version: 1.0
-        frontend:
-          phases:
-            preBuild:
-              commands:
-                - nvm use 18
-                - yarn install
-            build:
-              commands:
-                - env | grep -e NEXT_PUBLIC_ >> .env.production
-                - yarn run clean
-                - yarn cache clean
-                - yarn run build
-                - yarn run postbuild
-                - cd .next
-                - ls
-                - echo "Listing contents of the build artifacts folder..."
-          artifacts:
-            baseDirectory: .next
-            files:
-              - "**/*"
-          cache:
-            paths:
-              - node_modules/**/*
 
-  DevAmplifyBranch:
-    #Amplify Branch for the DuckStack Frontend
-    Type: 'AWS::Amplify::Branch'
+  CloudFormationDeploymentRole:
+    Type: AWS::IAM::Role
     Properties:
-      AppId: !GetAtt AmplifyApp.AppId
-      BranchName: !Ref Branch
-      EnablePerformanceMode: false
-      EnablePullRequestPreview: true
-      EnableAutoBuild: true
-      Stage: DEVELOPMENT
-      BuildSpec: |
-        version: 1.0
-        frontend:
-          phases:
-            preBuild:
-              commands:
-                - nvm use 18
-                - yarn install
-            build:
-              commands:
-                - env | grep -e NEXT_PUBLIC_ >> .env.production
-                - yarn run clean
-                - yarn cache clean
-                - yarn run build
-                - yarn run postbuild
-                - cd .next
-                - ls
-                - echo "Listing contents of the build artifacts folder..."
-          artifacts:
-            baseDirectory: .next
-            files:
-              - "**/*"
-          cache:
-            paths:
-              - node_modules/**/*
-
-Outputs:
-  DevALBDNSName:
-    Description: "The DNS name of the Dev ALB"
-    Value: !GetAtt DevALB.DNSName
-
-  AmplifyAppId:
-    Description: 'The ID of the created Amplify App'
-    Value: !GetAtt AmplifyApp.AppId
-    Export:
-      Name: !Sub '${Tag}AmplifyAppId'
-
-
-   
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: AmplifyFullAccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - amplify:*
+                Resource: '*'
