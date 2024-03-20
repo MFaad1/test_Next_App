@@ -6,7 +6,9 @@ Resources:
     Type: AWS::Amplify::App
     Properties:
       Name: test_next_app
-      Repository: https://github.com/MFaad1/test_Next_App.git
+      Repository: 'https://github.com/MFaad1/test_Next_App'
+      AccessToken: '{{resolve:secretsmanager:github:SecretString:github_pat}}'
+      Platform: WEB_COMPUTE
       BuildSpec: |
         version: 1
         frontend:
