@@ -1,4 +1,6 @@
 name: Deploy Next.js App
+run-name: Deploy commit ${{ github.sha }} by @${{ github.actor }}
+
 
 on:
   push:
