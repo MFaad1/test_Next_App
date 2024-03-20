@@ -27,4 +27,4 @@ jobs:
           aws-region: us-east-1  
 
       - name: Package Lambda Function Code
-        run: aws cloudformation package --template-file duckstack-dev.yaml --output-template-file duckstack_packaged.yaml --s3-bucket my-s3-bucket-name --region us-east-1
+        run: aws cloudformation package --template-file ./duckstack-dev.yaml --output-template-file duckstack_packaged.yaml --s3-bucket my-s3-bucket-name --region us-east-1
