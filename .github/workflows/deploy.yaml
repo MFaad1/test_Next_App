@@ -43,24 +43,25 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Describe CloudFormation stack events, ignore error if stack doesn't exist
-      - name: Describe CloudFormation stack events
+      # Check if CloudFormation stack exists and if it's in ROLLBACK_COMPLETE state
+      - name: Check CloudFormation stack status
+        id: check-stack
         run: |
-          aws cloudformation describe-stack-events --stack-name NextJsAppStack --region us-east-1 || true
+          status=$(aws cloudformation describe-stacks --stack-name NextJsAppStack --region us-east-1 --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "NON_EXISTENT")
+          echo "::set-output name=status::$status"
 
-      # Deploy or create CloudFormation stack based on stack existence
+      # Delete stack if it's in ROLLBACK_COMPLETE state
+      - name: Delete CloudFormation stack
+        if: steps.check-stack.outputs.status == 'ROLLBACK_COMPLETE'
+        run: |
+          aws cloudformation delete-stack --stack-name NextJsAppStack --region us-east-1
+          aws cloudformation wait stack-delete-complete --stack-name NextJsAppStack --region us-east-1
+
+      # Deploy or create CloudFormation stack
       - name: Deploy or create CloudFormation stack
         run: |
-          if aws cloudformation describe-stacks --stack-name NextJsAppStack --region us-east-1 2>&1 | grep -q 'does not exist'; then
-            aws cloudformation create-stack \
-              --template-body file://cloudformation-template.yaml \
-              --stack-name NextJsAppStack \
-              --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
-              --region us-east-1
-          else
-            aws cloudformation deploy \
-              --template-file cloudformation-template.yaml \
-              --stack-name NextJsAppStack \
-              --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
-              --region us-east-1
-          fi
+          aws cloudformation deploy \
+            --template-file cloudformation-template.yaml \
+            --stack-name NextJsAppStack \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
+            --region us-east-1
