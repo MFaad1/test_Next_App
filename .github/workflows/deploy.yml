@@ -6,9 +6,9 @@ on:
     branches:
       - main
       - dev
-          paths:
-    - 'ext_resources/**'
-    - '!ext_resources/containers/**'
+    paths:
+      - 'ext_resources/**'
+      - '!ext_resources/containers/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
