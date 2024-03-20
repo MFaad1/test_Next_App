@@ -1,12 +1,15 @@
 name: Deploy Next.js App
 run-name: Deploy commit ${{ github.sha }} by @${{ github.actor }}
 
-
 on:
   push:
     branches:
       - main
       - dev
+          paths:
+    - 'ext_resources/**'
+    - '!ext_resources/containers/**'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
