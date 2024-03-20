@@ -10,10 +10,6 @@ on:
       - 'ext_resources/**'
       - '!ext_resources/containers/**'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
   cloudformation_deploy:
     permissions:
