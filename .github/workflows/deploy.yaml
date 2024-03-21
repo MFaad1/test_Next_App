@@ -33,20 +33,11 @@ jobs:
         echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
         echo "region = $AWS_DEFAULT_REGION" >> ~/.aws/config
 
-    
-
     - name: Install Amplify CLI
       run: npm install -g @aws-amplify/cli
 
     - name: Initialize Amplify
-      run: |
-        mkdir amplify-temp
-        cd amplify-temp
-        amplify init --app https://github.com/MFaad1/test_Next_App --amplifyBranchName pr-main --yes
-        cd ..
-        rm -rf amplify-temp
-    - name: Verify Amplify CLI Installation
-      run: amplify --version
+      run: amplify init --amplifyBranchName pr-main --yes
 
     - name: Build Next.js App
       run: npm run build
