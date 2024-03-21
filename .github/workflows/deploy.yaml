@@ -33,6 +33,9 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         echo y | amplify init --amplifyBranchName pr-main
+        
+    - name: Install Dependencies
+      run: npm install  
 
     - name: Build Next.js App
       run: npm run build
