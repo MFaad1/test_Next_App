@@ -6,6 +6,7 @@ Resources:
     Type: AWS::Amplify::App
     Properties:
       Name: test_next_app
+      IAMServiceRole: arn:aws:iam::654654296587:role/service-role/AmplifySSRLoggingRole-d2dlx45gi61s7x
       Repository: 'https://github.com/MFaad1/test_Next_App'
       AccessToken: '{{resolve:secretsmanager:github:SecretString:github_pat}}'
       Platform: WEB_COMPUTE
