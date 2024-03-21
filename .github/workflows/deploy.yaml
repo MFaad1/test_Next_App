@@ -16,25 +16,26 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '21'
+        node-version: '19'  # Use a supported version of Node.js, 14 is a commonly used LTS version
 
     - name: Install Amplify CLI
-      run: yarn global add @aws-amplify/cli
+      run: npm install -g @aws-amplify/cli  # Use npm instead of yarn to install the Amplify CLI
 
-    - name: Generate Amplify Configuration
+    - name: Configure AWS Credentials
       run: |
-        mkdir amplify
-        echo "version: 1" > amplify/backend/amplify-meta.json
-        echo "{}" > amplify/backend/amplify-meta.json
-        echo "frontend:" > amplify/backend/amplify.yml
-        echo "  phases:" >> amplify/backend/amplify.yml
-        echo "    build:" >> amplify/backend/amplify.yml
-        echo "      commands:" >> amplify/backend/amplify.yml
-        echo "        - yarn install" >> amplify/backend/amplify.yml
-        echo "        - yarn run build" >> amplify/backend/amplify.yml
+        mkdir -p ~/.aws
+        echo "[default]" > ~/.aws/credentials
+        echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+        echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+        echo "region = us-east-1" >> ~/.aws/config
+
+    - name: Initialize Amplify
+      run: |
+        cd ${{ github.workspace }}
+        amplify init --amplifyBranchName pr-main --frontend javascript --yes  # Add --yes flag to automatically confirm initialization
 
     - name: Install Dependencies
-      run: yarn install  
+      run: yarn install  # Assuming you prefer using yarn for installing dependencies
 
     - name: Build Next.js App
       run: yarn run build
