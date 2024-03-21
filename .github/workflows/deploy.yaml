@@ -1,45 +1,85 @@
-name: Deploy to AWS Amplify
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Deploy Next.js app on AWS Amplify using CodePipeline
 
-on:
-  push:
-    branches:
-      - pr-main
+Parameters:
+  GitHubOAuthToken:
+    Type: String
+    Description: GitHub OAuth token for accessing the repository
+    NoEcho: true  # Prevent the token from being displayed during stack creation/update
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+Resources:
+  AmplifyApp:
+    Type: AWS::Amplify::App
+    Properties:
+      Name: MyNextApp
+      Repository: https://github.com/MFaad1/test_Next_App
+      Branch: pr-main
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+  PipelineRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "codepipeline.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: CodePipelinePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "codepipeline:StartPipelineExecution"
+                Resource: "*"
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '21'
-
-    - name: Install Amplify CLI
-      run: yarn global add @aws-amplify/cli
-
-    - name: Configure AWS Credentials
-      run: |
-        amplify configure headless --accessKeyId ${{ secrets.AWS_ACCESS_KEY_ID }} --secretAccessKey ${{ secrets.AWS_SECRET_ACCESS_KEY }} --region us-east-1
-
-    - name: Initialize Amplify
-      env:
-        AWS_REGION: us-east-1
-        AWS_DEFAULT_REGION: us-east-1
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        amplify init --amplifyBranchName pr-main --frontend javascript --yes 
-
-    - name: Install Dependencies
-      run: yarn install  
-
-    - name: Build Next.js App
-      run: yarn run build
-
-    - name: Deploy to AWS Amplify
-      run: amplify publish --simple
-
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: MyPipeline
+      RoleArn: !GetAtt PipelineRole.Arn
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: SourceAction
+              ActionTypeId:
+                Category: Source
+                Owner: ThirdParty
+                Provider: GitHub
+                Version: "1"
+              Configuration:
+                Owner: MFaad1
+                Repo: test_Next_App
+                Branch: pr-main
+                OAuthToken: !Ref GitHubOAuthToken
+              OutputArtifacts:
+                - Name: SourceOutput
+        - Name: Build
+          Actions:
+            - Name: BuildAction
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: "1"
+              Configuration:
+                ProjectName: MyCodeBuildProject
+              InputArtifacts:
+                - Name: SourceOutput
+              OutputArtifacts:
+                - Name: BuildOutput
+        - Name: Deploy
+          Actions:
+            - Name: DeployAction
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: Amplify
+                Version: "1"
+              Configuration:
+                AppId: !GetAtt AmplifyApp.AppId
+                BranchName: pr-main
+              InputArtifacts:
+                - Name: BuildOutput
