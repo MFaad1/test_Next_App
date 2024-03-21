@@ -34,7 +34,9 @@ jobs:
       run: |
         cd ${{ github.workspace }}
         amplify init --amplifyBranchName pr-main --frontend javascript --yes 
-
+    - name: Add Hosting to Amplify
+      run: amplify hosting add --simple
+      
     - name: Install Dependencies
       run: yarn install  
 
