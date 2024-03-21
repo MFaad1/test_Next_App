@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2024-09-08'
+AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS Amplify App with CloudFormation Stack
 
 Resources:
