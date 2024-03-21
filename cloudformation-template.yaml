@@ -5,7 +5,7 @@ Parameters:
   AppName:
     Description: The name of the Amplify App
     Type: String
-    Default: 'duckstack'
+    Default: 'myTestApp'
   Environment:
     Type: String
     Default: 'dev'
