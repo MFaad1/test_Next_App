@@ -49,19 +49,7 @@ jobs:
         run: |
           status=$(aws cloudformation describe-stacks --stack-name NextJsAppStack --region us-east-1 --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "NON_EXISTENT")
           echo "::set-output name=status::$status"
-
-      # Delete stack if it's in ROLLBACK_COMPLETE state
-      - name: Delete CloudFormation stack
-        if: steps.check-stack.outputs.status == 'ROLLBACK_COMPLETE'
-        run: |
-          aws cloudformation delete-stack --stack-name NextJsAppStack --region us-east-1
-          aws cloudformation wait stack-delete-complete --stack-name NextJsAppStack --region us-east-1
-
-      # Describe stack events on failure
-      - name: Describe stack events on failure
-        if: steps.check-stack.outputs.status == 'ROLLBACK_COMPLETE'
-        run: aws cloudformation describe-stack-events --stack-name NextJsAppStack --region us-east-1 || true
-
+          
       # Deploy or create CloudFormation stack
       - name: Deploy or create CloudFormation stack
         run: |
