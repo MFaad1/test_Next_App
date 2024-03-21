@@ -36,8 +36,7 @@ jobs:
     - name: Verify Amplify CLI Installation
       run: amplify --version
 
-    - name: Install Amplify CLI
-      run: npm install -g @aws-amplify/cli
+ 
 
     - name: Initialize Amplify
       run: |
@@ -46,6 +45,9 @@ jobs:
         amplify init --app https://github.com/MFaad1/test_Next_App --amplifyBranchName pr-main --yes
         cd ..
         rm -rf amplify-temp
+
+    - name: Install Amplify CLI
+      run: npm install -g @aws-amplify/cli    
 
     - name: Build Next.js App
       run: npm run build
