@@ -1,3 +1,30 @@
+name: Deploy to AWS Amplify
+
+on:
+  push:
+    branches:
+      - pr-main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  
+
+
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Deploy Next.js app on AWS Amplify using CodePipeline
 
