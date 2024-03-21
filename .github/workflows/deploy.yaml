@@ -37,6 +37,8 @@ jobs:
 
     - name: Initialize Amplify
       run: amplify init --app myTestapp --amplifyBranchName pr-main --yes
+      run: amplify init --app https://github.com/MFaad1/test_Next_App --amplifyBranchName pr-main --yes
+
 
     - name: Build Next.js App
       run: npm run build
