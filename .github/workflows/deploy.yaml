@@ -21,19 +21,17 @@ jobs:
     - name: Install Amplify CLI
       run: yarn global add @aws-amplify/cli
 
-    - name: Configure AWS Credentials
+    - name: Generate Amplify Configuration
       run: |
-        amplify configure headless --accessKeyId ${{ secrets.AWS_ACCESS_KEY_ID }} --secretAccessKey ${{ secrets.AWS_SECRET_ACCESS_KEY }} --region us-east-1
-
-    - name: Initialize Amplify
-      env:
-        AWS_REGION: us-east-1
-        AWS_DEFAULT_REGION: us-east-1
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: |
-        cd ${{ github.workspace }}
-        echo y | amplify init --amplifyBranchName pr-main --frontend javascript
+        mkdir amplify
+        echo "version: 1" > amplify/backend/amplify-meta.json
+        echo "{}" > amplify/backend/amplify-meta.json
+        echo "frontend:" > amplify/backend/amplify.yml
+        echo "  phases:" >> amplify/backend/amplify.yml
+        echo "    build:" >> amplify/backend/amplify.yml
+        echo "      commands:" >> amplify/backend/amplify.yml
+        echo "        - yarn install" >> amplify/backend/amplify.yml
+        echo "        - yarn run build" >> amplify/backend/amplify.yml
 
     - name: Install Dependencies
       run: yarn install  
