@@ -43,7 +43,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+
       # Deploy CloudFormation stack
       - name: Deploy CloudFormation stack
-        run: aws cloudformation describe-stacks --stack-name mynewStack
+        run: |
+          aws cloudformation deploy \
+            --template-file cloudformation-template.yaml \
+            --stack-name mynewStack \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
+            --region us-east-1
+
+
+      # Deploy CloudFormation stack
+      # - name: Deploy CloudFormation stack
+      #   run: aws cloudformation describe-stacks --stack-name mynewStack
             
+        
