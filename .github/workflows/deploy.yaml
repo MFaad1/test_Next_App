@@ -33,7 +33,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         amplify init --amplifyBranchName pr-main --frontend javascript --yes 
-        
+
     - name: Install Dependencies
       run: yarn install  
 
@@ -42,3 +42,4 @@ jobs:
 
     - name: Deploy to AWS Amplify
       run: amplify publish --simple
+
