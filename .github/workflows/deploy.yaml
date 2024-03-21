@@ -43,20 +43,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Check if CloudFormation stack exists and delete if in ROLLBACK_COMPLETE state
-      - name: Check CloudFormation stack status
-        run: |
-          status=$(aws cloudformation describe-stacks --stack-name NextJsAppStack --region us-east-1 --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "NON_EXISTENT")
-          if [ "$status" == "ROLLBACK_COMPLETE" ]; then
-            aws cloudformation delete-stack --stack-name NextJsAppStack --region us-east-1
-            aws cloudformation wait stack-delete-complete --stack-name NextJsAppStack --region us-east-1
-          fi
-
       # Deploy CloudFormation stack
       - name: Deploy CloudFormation stack
         run: |
           aws cloudformation deploy \
             --template-file cloudformation-template.yaml \
-            --stack-name NextJsAppStack \
+            --stack-name mynewStack \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
             --region us-east-1
