@@ -36,7 +36,6 @@ jobs:
       run: npm install -g @aws-amplify/cli
 
     - name: Initialize Amplify
-      run: amplify init --app myTestapp --amplifyBranchName pr-main --yes
       run: amplify init --app https://github.com/MFaad1/test_Next_App --amplifyBranchName pr-main --yes
 
 
