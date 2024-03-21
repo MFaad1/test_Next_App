@@ -33,6 +33,9 @@ jobs:
         echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
         echo "region = $AWS_DEFAULT_REGION" >> ~/.aws/config
 
+    - name: Verify Amplify CLI Installation
+      run: amplify --version
+
     - name: Install Amplify CLI
       run: npm install -g @aws-amplify/cli
 
