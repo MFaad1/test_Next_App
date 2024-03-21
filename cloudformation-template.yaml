@@ -100,7 +100,7 @@ Resources:
   # Amplify App for the DuckStack Frontend
     Type: 'AWS::Amplify::App'
     Properties:
-      Name: !Sub 'test.io'
+      Name: 'test.io'
       Description: !Sub '${CamelCaseTag} test app App' #parameterized DuckStack
       IAMServiceRole: 'arn:aws:iam::333893573946:role/AmplifySSRLoggingRole-dl9wnpuigxyq6'
       Repository: 'https://github.com/MFaad1/test_Next_App'
