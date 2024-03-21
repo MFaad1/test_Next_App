@@ -32,7 +32,7 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        yes | amplify init --amplifyBranchName pr-main --projectName testApp --appId testApp
+        echo y | amplify init --amplifyBranchName pr-main
 
     - name: Build Next.js App
       run: npm run build
