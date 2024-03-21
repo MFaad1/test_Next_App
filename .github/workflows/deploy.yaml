@@ -56,6 +56,6 @@ jobs:
 
       Deploy CloudFormation stack
       - name: Deploy CloudFormation stack
-        run: aws cloudformation describe-stacks --stack-name mynewStack --template-file cloudformation-template.yaml
+        run: aws cloudformation describe-stacks --stack-name mynewStack
             
         
