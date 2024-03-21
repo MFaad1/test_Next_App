@@ -54,19 +54,19 @@ jobs:
       - name: Delete CloudFormation stack
         if: steps.check-stack.outputs.status == 'ROLLBACK_COMPLETE'
         run: |
-          aws cloudformation delete-stack --stack-name NextJsAppStack --region us-east-1
-          aws cloudformation wait stack-delete-complete --stack-name NextJsAppStack --region us-east-1
+          aws cloudformation delete-stack --stack-name mynewStack --region us-east-1
+          aws cloudformation wait stack-delete-complete --stack-name mynewStack --region us-east-1
 
       # Describe stack events on failure
       - name: Describe stack events on failure
         if: steps.check-stack.outputs.status == 'ROLLBACK_COMPLETE'
-        run: aws cloudformation describe-stack-events --stack-name NextJsAppStack --region us-east-1 || true
+        run: aws cloudformation describe-stack-events --stack-name mynewStack --region us-east-1 || true
 
       # Deploy or create CloudFormation stack
       - name: Deploy or create CloudFormation stack
         run: |
           aws cloudformation deploy \
             --template-file cloudformation-template.yaml \
-            --stack-name NextJsAppStack \
+            --stack-name mynewStack \
             --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
             --region us-east-1
