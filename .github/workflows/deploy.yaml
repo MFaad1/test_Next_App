@@ -36,8 +36,12 @@ jobs:
       run: npm install -g @aws-amplify/cli
 
     - name: Initialize Amplify
-      run: amplify init --app https://github.com/MFaad1/test_Next_App --amplifyBranchName pr-main --yes
-
+      run: |
+        mkdir amplify-temp
+        cd amplify-temp
+        amplify init --app https://github.com/MFaad1/test_Next_App --amplifyBranchName pr-main --yes
+        cd ..
+        rm -rf amplify-temp
 
     - name: Build Next.js App
       run: npm run build
