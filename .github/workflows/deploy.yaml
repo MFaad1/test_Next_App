@@ -45,10 +45,5 @@ jobs:
 
       # Deploy CloudFormation stack
       - name: Deploy CloudFormation stack
-        run: |
-          aws cloudformation create-stack \
-            --template-file cloudformation-template.yaml \
-            --stack-name mynewStack \
-            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
-            --region us-east-1
+        run: aws cloudformation describe-stacks --stack-name mynewStack
             
