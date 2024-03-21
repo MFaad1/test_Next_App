@@ -33,7 +33,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         cd ${{ github.workspace }}
-        echo y | amplify init --amplifyBranchName pr-main --frontend react
+        echo y | amplify init --amplifyBranchName pr-main --frontend javascript
 
     - name: Install Dependencies
       run: yarn install  
