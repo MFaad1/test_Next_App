@@ -46,7 +46,7 @@ jobs:
 
 
 
-      Deploy CloudFormation stack
+      # Deploy CloudFormation stack
       - name: Deploy CloudFormation stack
         run: |
           aws cloudformation deploy \
